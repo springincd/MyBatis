@@ -1,4 +1,4 @@
-# Mybatis学习（我没有三颗心脏）
+# Mybatis学习（参考：我没有三颗心脏博客）
 
 Mybatis01: Mybatis的入门使用，crud操作
 
@@ -75,17 +75,17 @@ maven还有资源过滤这么一个说法，最终是将资源拷贝到target目
 
 ```xml
 <mappers>
-    <mapper class="org.ff.dao.StudentMapper"/>
-    <!--<mapper resource="org/ff/dao/StudentMapper.xml"/>-->
+    <mapper class="org.org.ff.dao.StudentMapper"/>
+    <!--<mapper resource="org/org.ff/dao/StudentMapper.xml"/>-->
 </mappers>
 ```
 
 StudentMapper.java
 
 ```java
-package org.ff.dao;
+package org.org.ff.dao;
 
-import org.ff.domain.Student;
+import org.org.ff.domain.Student;
 
 import java.util.List;
 
@@ -108,7 +108,7 @@ public interface StudentMapper {
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.ff.dao.StudentMapper">
+<mapper namespace="org.org.ff.dao.StudentMapper">
     <select id="listStudent" resultType="Student">
         select * from student
     </select>
@@ -155,4 +155,3 @@ public void listStudentByXmlTest(){
 
 mapper.xml中 namespace需要和对应的接口名一致，resultType在mybatis配置文件中如果配置了别名，就可以只写类名就行，没有配置别名就使用完全限定名称
 
-![image-20210314164516378](C:\Users\jhon\AppData\Roaming\Typora\typora-user-images\image-20210314164516378.png)

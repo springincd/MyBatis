@@ -51,12 +51,11 @@ public class MybatisTest {
         SqlSession sqlSession = MybatisUtil.getSqlSession();
         StudentMapper mapper = sqlSession.getMapper(StudentMapper.class);
         Student student = new Student();
-        student.setStudentID(9);
-        student.setName("凡凡9");
+        student.setStudentID(12);
+        student.setName("jack12");
         int rows = mapper.addStudent(student);
         System.out.println("effect rows: " + rows);
-        //新增完之后需要手动进行提交
-        sqlSession.commit();
+        sqlSession.commit(); //新增完之后需要手动进行提交
         sqlSession.close(); //执行sqlSession.commit()之后会自动执行close()吗？还是要手动的进行close()?
     }
 
@@ -78,7 +77,7 @@ public class MybatisTest {
     @Test
     public void deleteStudentByMapperTest(){
         Student student = new Student();
-        student.setId(11);
+        student.setId(12);
 
         SqlSession sqlSession = MybatisUtil.getSqlSession();
         StudentMapper mapper = sqlSession.getMapper(StudentMapper.class);
@@ -95,6 +94,4 @@ public class MybatisTest {
         Student student = mapper.findStudentById(2);
         System.out.println("student " + student);
     }
-
-
 }
