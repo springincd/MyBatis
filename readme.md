@@ -154,3 +154,5 @@ public void listStudentByXmlTest(){
 ***Mapper.xml注意事项：**
 
 mapper.xml中 namespace需要和对应的接口名一致，resultType在mybatis配置文件中如果配置了别名，就可以只写类名就行，没有配置别名就使用完全限定名称
+
+![image-20210314164516378](C:\Users\jhon\AppData\Roaming\Typora\typora-user-images\image-20210314164516378.png)
