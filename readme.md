@@ -15,7 +15,7 @@ Mybatis02: 注解，高级查询
 ## 学习内容：
 
 - crud操作--ok
-- 使用注解开发Mybatis
+- 使用注解开发Mybatis--ok
 
 - MyBatis高级映射：执行多表查询，复杂sql查询
 
@@ -154,4 +154,3 @@ public void listStudentByXmlTest(){
 ***Mapper.xml注意事项：**
 
 mapper.xml中 namespace需要和对应的接口名一致，resultType在mybatis配置文件中如果配置了别名，就可以只写类名就行，没有配置别名就使用完全限定名称
-
