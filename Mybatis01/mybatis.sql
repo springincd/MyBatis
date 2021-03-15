@@ -3,10 +3,10 @@ CREATE DATABASE mybatis DEFAULT CHARACTER SET utf8;
 
 USE mybatis;
 CREATE TABLE student(
-                        id int(11) NOT NULL AUTO_INCREMENT,
-                        studentID INT(11) NOT NULL UNIQUE,
-                        name VARCHAR(255) NOT NULL,
-                        PRIMARY KEY (id)
+    id int(11) NOT NULL AUTO_INCREMENT,
+    studentID INT(11) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 INSERT INTO student VALUES(null,1,"我没有三颗心脏");

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.ff.dao.EmployeeMapper">
+    <select id="listEmployeeByDepartmentName" parameterType="java.lang.String" resultType="Employee">
+        SELECT employee.*
+        FROM employee, department
+        WHERE employee.department_id = department.id
+          AND department.`name` = #{value}
+    </select>
+</mapper>

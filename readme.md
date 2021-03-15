@@ -4,6 +4,8 @@ Mybatis01: Mybatis的入门使用，crud操作
 
 Mybatis02: 注解，高级查询
 
+Mybatis03：高级映射，resultType, resultMap
+
 
 
 ## 参考：
@@ -188,7 +190,7 @@ public class MybatisTest {
 
 ## MyBatis高级映射
 
-### 步骤：
+### 目标：
 
 - 创建数据库，创建符合关联关系的表
 - 一对一关系查询
@@ -198,6 +200,255 @@ public class MybatisTest {
   - 通过resultMap配置返回结果，定义返回结果的包装类
 - 多对查询
   - 和一对多查询一样
+
+### 数据库创建：
+
+```sql
+-- 创建一对一关系 学生表与身份ID表
+DROP DATABASE IF EXISTS mybatis;
+CREATE DATABASE mybatis DEFAULT CHARACTER SET utf8;
+
+USE mybatis;
+CREATE TABLE student(
+	id int(11) NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255) NOT NULL,
+	card_id int(11) NOT NULL,
+	PRIMARY KEY (id)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE card(
+	id int(11) NOT NULL AUTO_INCREMENT,
+	number int(11) NOT NULL,
+	PRIMARY KEY(id)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+INSERT INTO card VALUES(1,1111);
+INSERT INTO card VALUES(2,2222);
+
+INSERT INTO student	VALUES(1,'student1',1);
+INSERT INTO student	VALUES(2,'student2',2);
+
+SELECT * FROM student;
+SELECT * FROM card;
+
+-- 创建一对多关系 部门表department(id,name)和员工表employee(id,name,department_id)
+CREATE TABLE department(
+	id int(11) AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	PRIMARY KEY(id)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE employee(
+	id int(11) AUTO_INCREMENT,
+	`name` VARCHAR(255),
+	department_id int(11),
+	PRIMARY KEY(id)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+INSERT INTO department VALUES(1,'d1');
+INSERT INTO department VALUES(2,'d2');
+
+INSERT INTO employee VALUES(1,'e1',1);
+INSERT INTO employee VALUES(2,'e2',1);
+INSERT INTO employee VALUES(3,'e3',2);
+
+SELECT * from employee;
+SELECT * from department;
+
+-- 查询指定部门下所有员工
+SELECT employee.*
+FROM employee, department
+WHERE employee.department_id = department.id
+	AND department.`name` = 'd1'
+```
+
+
+
+### 一对一关系：
+
+#### 实现步骤
+
+- 创建数据库，创建工程，创建对应的包，配置mybatis.xml配置文件
+- 创建对应的实体类，创建mapper.xml
+- 编写sql，修改Mapper.xml，测试
+- 测试返回值类型：resultType，resultMap
+
+#### 返回值类型：resultType
+
+Mapper.xml中resultType的值StudentCard对象的属性和select查询的结果集的字段需要对应上，如果无法对应上会导致赋值失败，查询的结果集只是增加了字段，StudentAndCard继承自Student，添加上对应多余的字段。
+
+相关代码：Student.java, Card.java, StudentAndCard.java, StudentMapper.xml，
+
+```java
+package org.ff.domain;
+
+public class Student {
+    private int id;
+    private String name;
+    private int card_id;
+
+    /* getter and setter */
+}
+```
+
+```java
+package org.ff.domain;
+
+public class Card {
+    private int id;
+    private int number;
+
+    /* getter and setter */
+}
+```
+
+```java
+package org.ff.domain;
+
+public class StudentAndCard extends Student{
+    private int number;
+
+    /* getter and setter */
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.ff.dao.StudentMapper">
+    <!--返回值类型 resultType -->
+    <select id="findStudentByCard" parameterType="_int" resultType="StudentAndCard">
+        -- 查询sql
+        SELECT student.*, card.number AS card_number
+        FROM student, card
+        where student.card_id = card.id
+          AND card.number = 1111
+    </select>
+</mapper>
+```
+
+```java
+@Test
+public void findStudentByCardTest(){
+    SqlSession sqlSession = MybatisUtil.getSqlSession();
+    StudentAndCard studentAndCard = sqlSession.selectOne("findStudentByCard",1111);
+    System.out.println(studentAndCard);
+
+}
+```
+
+#### 返回值类型为：resultmap
+
+相关代码：StudentWithCard.java, StudentMapper.xml
+
+```java
+package org.ff.domain;
+
+public class StudentWithCard {
+    private Student student;
+    private int id;
+    private int number;
+
+    /* getter and setter */
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.ff.dao.StudentMapper">
+    <select id="findStudentByCard" parameterType="_int" resultMap="studentInfoMap">
+        -- 查询sql
+        SELECT student.*, card.number AS card_number
+        FROM student, card
+        where student.card_id = card.id
+          AND card.number = 1111
+    </select>
+
+    <resultMap id="studentInfoMap" type="StudentWithCard">
+        <!--关键字：id-主键 result-结果集其他字段 column-结果集字段名 property-实体类属性名-->
+        <id column="id" property="id"/>
+        <result column="number" property="number"/>
+        <!--关键字： association-表示关联的类，property-实体类属性名 javaType-实体类类名-->
+        <association property="student" javaType="Student">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="card_id" property="card_id"/>
+        </association>
+    </resultMap>
+
+</mapper>
+```
+
+```java
+@Test
+public void findStudentWithCardTest(){
+    SqlSession sqlSession = MybatisUtil.getSqlSession();
+    StudentWithCard studentWithCard = sqlSession.selectOne("findStudentWithCard",1111);
+    System.out.println(studentWithCard);
+
+}
+```
+
+resultMap优点：
+
+- 当结果集中的字段名与实体类中的字段名不一致的时候，可以通过配置resultmap进行转换；
+- 在处理属性是引用数据类型的实体类的时候适用
+
+### 一对多关系：
+
+#### 实现步骤：
+
+- 建表，创建对应的实体类，编写Mapper.xml，返回值类型使用reultType, resultMap都行
+
+相关代码：Employee.java, Department.java, EmployeeMapper.xml
+
+```java
+package org.ff.domain;
+
+public class Employee {
+    private int id;
+    private String name;
+    private int department_id;
+
+    /* getter and setter */
+}
+```
+
+```java
+package org.ff.domain;
+
+public class Department {
+    private int id;
+    private String name;
+
+    /* getter and setter */
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.ff.dao.EmployeeMapper">
+    <select id="listEmployeeByDepartmentName" parameterType="java.lang.String" resultType="Employee">
+        SELECT employee.*
+        FROM employee, department
+        WHERE employee.department_id = department.id
+          AND department.`name` = #{value}
+    </select>
+</mapper>
+```
+
+### 多对多关系：
 
 
 
@@ -294,3 +545,4 @@ public void listStudentByXmlTest(){
 
 mapper.xml中namespace需要和对应的接口名一致，resultType在mybatis配置文件中如果配置了别名，就可以只写类名就行，没有配置别名就使用完全限定名称
 
+**轻量级数据表设计可视化工具**

@@ -7,8 +7,8 @@
     <typeAliases>
         <package name="org.ff.domain"/>
     </typeAliases>
-    <environments default="mysql_develop">
-        <environment id="mysql_develop">
+    <environments default="mysql-develop">
+        <environment id="mysql-develop">
             <transactionManager type="jdbc"/>
             <dataSource type="pooled">
                 <property name="driver" value="${mysql.driver}"/>
@@ -18,9 +18,8 @@
             </dataSource>
         </environment>
     </environments>
-
     <mappers>
-        <mapper class="org.ff.dao.StudentMapper"/>
-        <!--<mapper resource="org/ff/dao/StudentMapper.xml"/>-->
+        <mapper resource="org/ff/dao/StudentMapper.xml"/>
+        <mapper resource="org/ff/dao/EmployeeMapper.xml"/>
     </mappers>
 </configuration>

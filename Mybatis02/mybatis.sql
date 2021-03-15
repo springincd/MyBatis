@@ -1,12 +1,13 @@
+-- 使用注解编写sql
 DROP DATABASE IF EXISTS mybatis;
 CREATE DATABASE mybatis DEFAULT CHARACTER SET utf8;
 
 USE mybatis;
 CREATE TABLE student(
-                        id int(11) NOT NULL AUTO_INCREMENT,
-                        studentID INT(11) NOT NULL UNIQUE,
-                        name VARCHAR(255) NOT NULL,
-                        PRIMARY KEY (id)
+    id int(11) NOT NULL AUTO_INCREMENT,
+    studentID INT(11) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 INSERT INTO student VALUES(null,1,"我没有三颗心脏");
@@ -14,3 +15,30 @@ INSERT INTO student VALUES(null,2,"我没有三颗心脏");
 INSERT INTO student VALUES(null,3,"我没有三颗心脏");
 
 SELECT * FROM student;
+
+-- 创建一对一关系
+DROP DATABASE IF EXISTS mybatis;
+CREATE DATABASE mybatis DEFAULT CHARACTER SET utf8;
+
+USE mybatis;
+CREATE TABLE student(
+    id int(11) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    card_id int(11) NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE card(
+    id int(11) NOT NULL AUTO_INCREMENT,
+    number int(11) NOT NULL,
+    PRIMARY KEY(id)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+INSERT INTO card VALUES(1,1111);
+INSERT INTO card VALUES(2,2222);
+
+INSERT INTO student	VALUES(1,'student1',1);
+INSERT INTO student	VALUES(2,'student2',2);
+
+SELECT * FROM student;
+SELECT * FROM card;

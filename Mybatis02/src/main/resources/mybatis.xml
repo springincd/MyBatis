@@ -5,7 +5,7 @@
 <configuration>
     <properties resource="db.properties"/>
     <typeAliases>
-        <package name="org.org.ff.domain"/>
+        <package name="org.ff.domain"/>
     </typeAliases>
     <environments default="mysql_develop">
         <environment id="mysql_develop">
